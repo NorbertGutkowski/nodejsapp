@@ -1,0 +1,62 @@
+[
+    {
+        "id": 1,
+        "imie": "Jan",
+        "nazwisko": "Kowalski",
+        "wiek": 27,
+        "wzrost": 180,
+        "kategoriaWagowa": "Średnia",
+        "statystyki": {
+            "walki": 20,
+            "zwyciestwa": 15,
+            "porazki": 3,
+            "remisy": 2
+        },
+        "opisWalk": [
+            {
+                "data": "2023-05-12",
+                "przeciwnik": "Adam Nowak",
+                "wynik": "Zwycięstwo",
+                "sposob": "KO w 2. rundzie",
+                "przebiegWalki": "opis calej walki bardziej szczegolowy"
+            },
+            {
+                "data": "2022-11-05",
+                "przeciwnik": "Tomasz Zieliński",
+                "wynik": "Porażka",
+                "sposob": "Decyzja sędziów",
+                "przebiegWalki": "opis calej walki bardziej szczegolowy"
+            }
+        ]
+    },
+    {
+        "imie": "asdasd",
+        "nazwisko": "asdasd",
+        "wiek": "12",
+        "wzrost": "12",
+        "kategoriaWagowa": "asdasd",
+        "statystyki": {
+            "walki": 0,
+            "zwyciestwa": "0",
+            "porazki": "0",
+            "remisy": "0"
+        },
+        "opisWalk": [],
+        "id": 3
+    },
+    {
+        "imie": "asdasd",
+        "nazwisko": "asdasd",
+        "wiek": "12",
+        "wzrost": "12",
+        "kategoriaWagowa": "asdasd",
+        "statystyki": {
+            "walki": 0,
+            "zwyciestwa": "0",
+            "porazki": "0",
+            "remisy": "0"
+        },
+        "opisWalk": [],
+        "id": 4
+    }
+]

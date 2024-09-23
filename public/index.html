@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baza Walk</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 60%;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .fight-description {
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        #fightList li {
+            margin-bottom: 10px;
+            background-color: #eee;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dodaj Nowego Zawodnika i Walki</h1>
+        <form id="fightForm">
+            <label for="imie">Imię:</label><br>
+            <input type="text" id="imie" name="imie" required><br>
+
+            <label for="nazwisko">Nazwisko:</label><br>
+            <input type="text" id="nazwisko" name="nazwisko" required><br>
+
+            <label for="wiek">Wiek:</label><br>
+            <input type="number" id="wiek" name="wiek" required><br>
+
+            <label for="wzrost">Wzrost:</label><br>
+            <input type="number" id="wzrost" name="wzrost" required><br>
+
+            <label for="kategoriaWagowa">Kategoria Wagowa:</label><br>
+            <input type="text" id="kategoriaWagowa" name="kategoriaWagowa" required><br>
+
+            <h3>Statystyki</h3>
+            <label for="walki">Walki:</label><br>
+            <input type="number" id="walki" name="walki" required onchange="generateFightDescriptions()"><br>
+
+            <label for="zwyciestwa">Zwycięstwa:</label><br>
+            <input type="number" id="zwyciestwa" name="zwyciestwa" required><br>
+
+            <label for="porazki">Porażki:</label><br>
+            <input type="number" id="porazki" name="porazki" required><br>
+
+            <label for="remisy">Remisy:</label><br>
+            <input type="number" id="remisy" name="remisy" required><br>
+
+            <h3>Opisy Walk</h3>
+            <div id="fightDescriptions"></div>
+
+            <button type="submit">Dodaj Zawodnika</button>
+        </form>
+
+        <h1>Lista Zawodników</h1>
+        <ul id="fightList"></ul>
+    </div>
+
+    <script>
+        // Funkcja do dynamicznego generowania formularzy dla walk
+        function generateFightDescriptions() {
+            const fightCount = parseInt(document.getElementById('walki').value);
+            const fightDescriptionsDiv = document.getElementById('fightDescriptions');
+            fightDescriptionsDiv.innerHTML = '';
+
+            for (let i = 1; i <= fightCount; i++) {
+                const fightDiv = document.createElement('div');
+                fightDiv.classList.add('fight-description');
+                fightDiv.innerHTML = `
+                    <h4>Walka ${i}</h4>
+                    <label for="dataWalki_${i}">Data Walki:</label>
+                    <input type="date" id="dataWalki_${i}" name="dataWalki_${i}" required><br>
+
+                    <label for="przeciwnik_${i}">Przeciwnik:</label>
+                    <input type="text" id="przeciwnik_${i}" name="przeciwnik_${i}" required><br>
+
+                    <label for="wynik_${i}">Wynik:</label>
+                    <input type="text" id="wynik_${i}" name="wynik_${i}" required><br>
+
+                    <label for="sposob_${i}">Sposób zakończenia walki:</label>
+                    <input type="text" id="sposob_${i}" name="sposob_${i}" required><br>
+
+                    <label for="przebiegWalki_${i}">Przebieg Walki:</label>
+                    <textarea id="przebiegWalki_${i}" name="przebiegWalki_${i}" required></textarea>
+                `;
+                fightDescriptionsDiv.appendChild(fightDiv);
+            }
+        }
+
+        // Pobierz wszystkie rekordy i wyświetl na stronie
+        function loadFights() {
+            fetch('/fights')
+                .then(response => response.json())
+                .then(data => {
+                    const fightList = document.getElementById('fightList');
+                    fightList.innerHTML = '';
+                    data.forEach(fight => {
+                        const li = document.createElement('li');
+                        li.textContent = `${fight.imie} ${fight.nazwisko} - ${fight.statystyki.walki} walk, ${fight.statystyki.zwyciestwa} zwycięstw.`;
+                        fightList.appendChild(li);
+                    });
+                });
+        }
+
+        // Dodaj nowego zawodnika
+        document.getElementById('fightForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const fightCount = parseInt(document.getElementById('walki').value);
+            const opisWalk = [];
+
+            for (let i = 1; i <= fightCount; i++) {
+                opisWalk.push({
+                    data: document.getElementById(`dataWalki_${i}`).value,
+                    przeciwnik: document.getElementById(`przeciwnik_${i}`).value,
+                    wynik: document.getElementById(`wynik_${i}`).value,
+                    sposob: document.getElementById(`sposob_${i}`).value,
+                    przebiegWalki: document.getElementById(`przebiegWalki_${i}`).value
+                });
+            }
+
+            const formData = {
+                imie: document.getElementById('imie').value,
+                nazwisko: document.getElementById('nazwisko').value,
+                wiek: document.getElementById('wiek').value,
+                wzrost: document.getElementById('wzrost').value,
+                kategoriaWagowa: document.getElementById('kategoriaWagowa').value,
+                statystyki: {
+                    walki: fightCount,
+                    zwyciestwa: document.getElementById('zwyciestwa').value,
+                    porazki: document.getElementById('porazki').value,
+                    remisy: document.getElementById('remisy').value
+                },
+                opisWalk: opisWalk
+            };
+
+            fetch('/add-fight', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            }).then(() => {
+                loadFights();
+                document.getElementById('fightForm').reset();
+                document.getElementById('fightDescriptions').innerHTML = '';
+            });
+        });
+
+        
+        // Załaduj listę po otwarciu strony
+        window.onload = loadFights;
+        
+    </script>
+</body>
+</html>
